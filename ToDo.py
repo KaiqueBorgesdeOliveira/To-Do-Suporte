@@ -73,8 +73,10 @@ def adicionar_item():
     conn.commit()
     atualizar_tabela()
     entry_numero.delete(0, tk.END)
+    entry_numero.insert(0, "SC-")
     tipo_var.set("")
     entry_quantidade.delete(0, tk.END)
+    entry_quantidade.insert(0, "1")
 
 def atualizar_tabela():
     for item in tree.get_children():
@@ -110,12 +112,24 @@ def exportar_csv():
                                          filetypes=[("CSV files", "*.csv")])
     if not file:
         return
-    with open(file, mode='w', newline='', encoding='utf-8') as f:
-        writer = csv.writer(f)
-        colunas = tree["columns"]
-        writer.writerow(colunas)
-        for item in tree.get_children():
-            writer.writerow(tree.item(item)['values'])
+    
+    # Obtém os dados da tabela
+    colunas = tree["columns"]
+    dados = []
+    
+    # Adiciona o cabeçalho
+    dados.append(colunas)
+    
+    # Adiciona os dados das linhas
+    for item in tree.get_children():
+        valores = tree.item(item)['values']
+        dados.append(valores)
+    
+    # Exporta para CSV com codificação UTF-8-SIG para melhor compatibilidade com Excel
+    with open(file, mode='w', newline='', encoding='utf-8-sig') as f:
+        writer = csv.writer(f, delimiter=';')  # Usando ponto e vírgula como separador
+        writer.writerows(dados)
+    
     messagebox.showinfo("Exportado", f"Dados exportados para {file}")
 
 def resetar_planilha():
@@ -130,6 +144,16 @@ root = tk.Tk()
 root.title("Controle de Chamados - Suporte")
 root.configure(bg=BG_COLOR)
 
+# Definir tamanho fixo e centralizar a janela
+largura_janela = 450
+altura_janela = 500
+largura_tela = root.winfo_screenwidth()
+altura_tela = root.winfo_screenheight()
+x = (largura_tela // 2) - (largura_janela // 2)
+y = (altura_tela // 2) - (altura_janela // 2)
+root.geometry(f"{largura_janela}x{altura_janela}+{x}+{y}")
+root.resizable(False, False)
+
 frame_form = tk.Frame(root, bg=BG_COLOR)
 frame_form.pack(pady=10)
 
@@ -137,10 +161,10 @@ tk.Label(frame_form, text="Número do Chamado:", fg=TEXT_COLOR, bg=BG_COLOR).gri
 tk.Label(frame_form, text="Tipo do Item:", fg=TEXT_COLOR, bg=BG_COLOR).grid(row=1, column=0)
 tk.Label(frame_form, text="Quantidade:", fg=TEXT_COLOR, bg=BG_COLOR).grid(row=2, column=0)
 
-entry_numero = tk.Entry(frame_form, bg=ENTRY_BG, fg=ENTRY_FG, insertbackground=ENTRY_FG)
+entry_numero = tk.Entry(frame_form, bg=ENTRY_BG, fg=ENTRY_FG, insertbackground=ENTRY_FG, width=28)
 tipo_var = tk.StringVar()
 
-# Estilização do Combobox para ficar com fundo escuro
+# Estilização do Combobox para ficar com fundo escuro e largura igual
 style = ttk.Style()
 style.theme_use("default")
 style.configure("CustomCombobox.TCombobox",
@@ -150,19 +174,24 @@ style.configure("CustomCombobox.TCombobox",
                 arrowcolor=ENTRY_FG)
 
 entry_tipo = ttk.Combobox(frame_form, textvariable=tipo_var, values=tipos_itens,
-                          state="readonly", style="CustomCombobox.TCombobox")
-entry_tipo.config(width=25)
+                          state="readonly", style="CustomCombobox.TCombobox", width=28)
 
-entry_quantidade = tk.Entry(frame_form, bg=ENTRY_BG, fg=ENTRY_FG, insertbackground=ENTRY_FG)
+entry_quantidade = tk.Entry(frame_form, bg=ENTRY_BG, fg=ENTRY_FG, insertbackground=ENTRY_FG, width=28)
 
-entry_numero.grid(row=0, column=1, padx=5, pady=2)
-entry_tipo.grid(row=1, column=1, padx=5, pady=2)
-entry_quantidade.grid(row=2, column=1, padx=5, pady=2)
+# Definir valores iniciais
+entry_numero.insert(0, "SC-")
+entry_quantidade.insert(0, "1")
 
-tk.Button(frame_form, text="Adicionar Item", command=adicionar_item).grid(row=3, column=0, columnspan=2, pady=5)
+entry_numero.grid(row=0, column=1, padx=10, pady=8)
+entry_tipo.grid(row=1, column=1, padx=10, pady=8)
+entry_quantidade.grid(row=2, column=1, padx=10, pady=8)
+
+# Botão centralizado e com largura igual aos campos
+btn_adicionar = tk.Button(frame_form, text="Adicionar Item", command=adicionar_item, width=27)
+btn_adicionar.grid(row=3, column=0, columnspan=2, pady=12)
 
 # Treeview dinâmica
-tree = ttk.Treeview(root, show='headings')
+tree = ttk.Treeview(root, show='headings', height=12)  # Ajusta a altura da tabela
 tree.pack(padx=10, pady=10, fill='both', expand=True)
 
 style.configure("Treeview", background=TABLE_BG, foreground=TEXT_COLOR, fieldbackground=TABLE_BG)
