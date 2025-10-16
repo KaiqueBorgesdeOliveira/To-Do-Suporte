@@ -5,6 +5,7 @@ Sistema de controle de chamados para equipes de suporte técnico, desenvolvido e
 ## 🚀 Funcionalidades
 
 - ✅ **Cadastro de Chamados**: Registre chamados com número, tipo de item e quantidade
+- ✏️ **Edição de Itens**: Edite ou exclua itens existentes com duplo clique ou botão
 - 📊 **Visualização Organizada**: Tabela dinâmica que agrupa itens por tipo
 - 📤 **Exportação CSV**: Exporte os dados para planilhas com formatação otimizada
 - 🔄 **Reset de Dados**: Limpe todos os registros quando necessário
@@ -43,19 +44,40 @@ python -m PyInstaller --noconsole --onefile ToDo.py
 1. **Número do Chamado**: Digite o número (já inicia com "SC-")
 2. **Tipo do Item**: Selecione na lista predefinida
 3. **Quantidade**: Digite a quantidade (já inicia com "1")
-4. Clique em **"Adicionar Item"**
+4. **Data da Solicitação**: Campo editável preenchido automaticamente com a data atual
+5. Clique em **"Adicionar Item"**
 
-### 2. Visualizando os Dados
+**Nota Especial**: Para pilhas AAA, a quantidade será automaticamente ajustada para 2 (padrão da empresa).
+
+### 2. Editando Itens
+- **Duplo clique** em qualquer item na tabela para editar
+- Ou selecione um item e clique no botão **"Editar Item"**
+- Na janela de edição você pode:
+  - Modificar o número do chamado
+  - Alterar o tipo de item
+  - Ajustar a quantidade
+  - Alterar a data da solicitação
+  - Excluir o item completamente
+- Clique em **"Salvar"** para confirmar as alterações
+- **Nota**: Para pilhas AAA, a quantidade será automaticamente ajustada para 2
+
+### 3. Visualizando os Dados
 - A tabela mostra todos os itens agrupados por tipo
+- Cada item exibe o número do chamado junto com a data da solicitação
+- Os itens são ordenados por data (mais recentes primeiro)
 - A última linha exibe os totais por categoria
 - Os dados são atualizados automaticamente
 
-### 3. Exportando Dados
+### 4. Exportando Dados
 - Clique em **"Exportar CSV"**
+- **Nova funcionalidade**: Selecione as colunas que deseja exportar
+- **Duas opções disponíveis**:
+  - **Opção 1**: Colunas Padrão (lista simples com todos os dados)
+  - **Opção 2**: Por Tipo de Item (formato da tabela com agrupamento)
 - Escolha o local para salvar o arquivo
 - O arquivo será salvo com codificação UTF-8 e separador ponto e vírgula
 
-### 4. Resetando os Dados
+### 5. Resetando os Dados
 - Clique em **"Resetar Planilha"**
 - Confirme a ação na caixa de diálogo
 - ⚠️ **Atenção**: Esta ação apaga todos os dados permanentemente
@@ -89,7 +111,8 @@ CREATE TABLE chamados (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     numero_chamado TEXT NOT NULL,
     tipo_item TEXT NOT NULL,
-    quantidade INTEGER NOT NULL
+    quantidade INTEGER NOT NULL,
+    data_solicitacao TEXT NOT NULL
 )
 ```
 
@@ -139,6 +162,32 @@ To-Do/
 - Compatível com Excel e LibreOffice
 
 ## 📝 Changelog
+
+### v1.3.0
+- ✏️ **NOVA FUNCIONALIDADE**: Campo de data editável na interface principal
+- 📤 **NOVA FUNCIONALIDADE**: Exportação com seleção de colunas
+- 📤 **NOVA FUNCIONALIDADE**: Duas opções de exportação (colunas padrão ou por tipo de item)
+- 🎨 Interface de seleção de colunas intuitiva
+- 🔧 Validação de seleção de colunas obrigatória
+- 📚 Documentação atualizada
+
+### v1.2.0
+- 📅 **NOVA FUNCIONALIDADE**: Campo de data da solicitação
+- 🔋 **NOVA FUNCIONALIDADE**: Lógica automática para pilhas AAA (quantidade = 2)
+- 📊 **MELHORIA**: Tabela mostra data junto com número do chamado
+- 📊 **MELHORIA**: Ordenação por data (mais recentes primeiro)
+- 🎨 Interface atualizada com campo de data
+- 🔧 Validação automática de quantidade para pilhas AAA
+- 📚 Documentação atualizada
+
+### v1.1.0
+- ✏️ **NOVA FUNCIONALIDADE**: Edição de itens existentes
+- ✏️ **NOVA FUNCIONALIDADE**: Exclusão de itens individuais
+- ✏️ **NOVA FUNCIONALIDADE**: Duplo clique para editar
+- ✏️ **NOVA FUNCIONALIDADE**: Botão "Editar Item" na interface
+- 🎨 Interface de edição com janela modal
+- 🔧 Validação de dados na edição
+- 📚 Documentação atualizada
 
 ### v1.0.0
 - ✅ Interface gráfica moderna com tema escuro
